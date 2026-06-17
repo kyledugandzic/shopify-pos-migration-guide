@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shopify POS — Self-Serve Migration Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #1a1a1a;
+    background: #f5f5f5;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 850px;
+    margin: 0 auto;
+    background: white;
+  }
+
+  @media print {
+    body { background: white; }
+    .page { max-width: 100%; box-shadow: none; }
+    .no-break { page-break-inside: avoid; }
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #004c3f 0%, #006341 100%);
+    color: white;
+    padding: 48px 56px 40px;
+  }
+  .header-label {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    margin-bottom: 8px;
+  }
+  .header h1 {
+    font-size: 38px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+  .header p.subtitle {
+    font-size: 16px;
+    opacity: 0.85;
+    max-width: 600px;
+    line-height: 1.6;
+  }
+  .tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .tag {
+    background: rgba(255,255,255,0.15);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* Sections */
+  .section {
+    padding: 40px 56px;
+  }
+  .section + .section {
+    border-top: 1px solid #e8e8e8;
+  }
+  .section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #1a1a1a;
+  }
+  .section h2::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: #e8e8e8;
+    margin-top: 12px;
+    margin-bottom: 16px;
+  }
+  .section p.section-intro {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  /* Phase card */
+  .phase-card {
+    background: #fafafa;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 32px 36px;
+    margin-bottom: 24px;
+  }
+  .phase-number {
+    display: inline-block;
+    background: #004c3f;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .phase-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #1a1a1a;
+  }
+  .phase-card p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  /* Steps */
+  .steps {
+    list-style: none;
+    counter-reset: step;
+  }
+  .steps li {
+    position: relative;
+    padding: 12px 0 12px 40px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .steps li:last-child { border-bottom: none; }
+  .steps li::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #004c3f;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .steps li strong { color: #1a1a1a; }
+  .steps li code {
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* Checklist */
+  .checklist {
+    list-style: none;
+  }
+  .checklist li {
+    padding: 10px 0 10px 32px;
+    position: relative;
+    font-size: 14px;
+    border-bottom: 1px solid #f0f0f0;
+    line-height: 1.5;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+  }
+
+  /* Callout */
+  .callout {
+    background: #f0faf7;
+    border-left: 4px solid #004c3f;
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.6;
+  }
+  .callout strong { color: #004c3f; }
+
+  .callout-warn {
+    background: #fff8f0;
+    border-left-color: #e8850c;
+  }
+  .callout-warn strong { color: #c26f00; }
+
+  /* Timeline header */
+  .timeline-est {
+    display: inline-block;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 12px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* Hardware table */
+  .hw-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 14px;
+  }
+  .hw-table th {
+    text-align: left;
+    font-weight: 600;
+    padding: 10px 12px;
+    background: #f5f5f5;
+    border-bottom: 2px solid #e0e0e0;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+  }
+  .hw-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .hw-table tr:last-child td { border-bottom: none; }
+
+  /* Links section */
+  .resource-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: #1a1a1a;
+    font-size: 14px;
+    font-weight: 500;
+    transition: border-color 0.15s;
+  }
+  .resource-link:hover { border-color: #004c3f; }
+  .resource-link .icon { font-size: 20px; }
+  .resource-link .label { flex: 1; }
+  .resource-link .arrow { color: #999; font-size: 18px; }
+
+  /* Footer */
+  .footer {
+    padding: 32px 56px;
+    background: #fafafa;
+    border-top: 1px solid #e8e8e8;
+    font-size: 13px;
+    color: #999;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-label">Shopify POS</div>
+    <h1>Self-Serve Migration Guide</h1>
+    <p class="subtitle">Everything you need to migrate from your current POS system to Shopify POS. Work through it at your own pace — most merchants complete setup in 1-2 weeks.</p>
+    <div class="tags">
+      <span class="tag">Shopify Plus</span>
+      <span class="tag">POS Pro Active</span>
+      <span class="tag">Unified Commerce</span>
+    </div>
+  </div>
+
+  <!-- Phase 1: Prep -->
+  <div class="section">
+    <h2>Before You Start</h2>
+    <p class="section-intro">Grab these exports from your current POS system before building anything in Shopify. Having this data ready makes everything faster.</p>
+
+    <div class="phase-card">
+      <span class="phase-number">Phase 1</span>
+      <h3>Export Your Data <span class="timeline-est">~1 day</span></h3>
+      <p>Pull these from your current POS. Save everything as CSV files where possible — that's what Shopify uses for imports.</p>
+      <ul class="checklist">
+        <li><strong>Product catalog</strong> — name, SKU, price, barcode, quantity per location</li>
+        <li><strong>Customer list</strong> — name, email, phone, address</li>
+        <li><strong>Active gift card balances and codes</strong> (if applicable)</li>
+        <li><strong>Current tax settings</strong> per location</li>
+        <li><strong>Custom discounts or loyalty programs</strong> — document how they work today</li>
+        <li><strong>Hardware inventory</strong> — note your current receipt printers, scanners, cash drawers (some may be compatible with Shopify)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Phase 2: Locations -->
+  <div class="section">
+    <h2>Set Up Your Locations</h2>
+
+    <div class="phase-card">
+      <span class="phase-number">Phase 2</span>
+      <h3>Configure Retail Locations <span class="timeline-est">~15 min</span></h3>
+      <p>Your Shopify admin already has POS Pro active. Now make sure your retail location(s) are configured correctly.</p>
+      <ol class="steps">
+        <li>Go to <code>Settings → Locations</code></li>
+        <li>Confirm your retail location is listed with the <strong>correct name and address</strong>. If not, click <strong>"Add location"</strong> and enter your store details.</li>
+        <li>For each retail location, enable <strong>"Fulfill online orders from this location"</strong> if you want ship-from-store capability.</li>
+        <li>Verify the correct inventory is assigned to each location.</li>
+      </ol>
+      <div class="callout">
+        <strong>Multiple locations?</strong> Repeat for each store. Every location gets its own inventory, staff assignments, and POS settings.
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 3: Payments -->
+  <div class="section">
+    <h2>Activate Shopify Payments</h2>
+
+    <div class="phase-card">
+      <span class="phase-number">Phase 3</span>
+      <h3>Enable Card-Present Payments <span class="timeline-est">~30 min</span></h3>
+      <p>Required for accepting card payments at POS. Without this, you can only take cash.</p>
+      <ol class="steps">
+        <li>Go to <code>Settings → Payments</code></li>
+        <li>Click <strong>"Activate Shopify Payments"</strong> (if not already active)</li>
+        <li>Complete business verification — business info, bank account for deposits, tax ID</li>
+        <li>Once approved, your POS card reader will process payments through Shopify Payments automatically</li>
+      </ol>
+      <div class="callout">
+        <strong>Good to know:</strong> Shopify Payments is powered by Stripe. Card-present transactions are decoupled from Shopify's platform — your register keeps processing cards even during a backend hiccup. Deposits typically hit your bank account in 2 business days.
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 4: Products & Inventory -->
+  <div class="section">
+    <h2>Import Products &amp; Inventory</h2>
+
+    <div class="phase-card">
+      <span class="phase-number">Phase 4</span>
+      <h3>Get Your Catalog Into Shopify <span class="timeline-est">1-3 days</span></h3>
+
+      <p><strong>If your products are already in Shopify</strong> from your online store, you just need to make sure inventory quantities are correct at your retail location(s).</p>
+      <ol class="steps">
+        <li>Go to <code>Products → Inventory</code></li>
+        <li>Filter by your retail location</li>
+        <li>Update quantities to match what's physically on the shelf</li>
+        <li>For bulk updates: <code>Products → Export</code> → update the CSV → <code>Import</code></li>
+      </ol>
+
+      <div style="margin-top: 24px;">
+        <p><strong>If your products are NOT in Shopify yet:</strong></p>
+        <ol class="steps">
+          <li>Go to <code>Products → Import</code></li>
+          <li>Upload your CSV — use <strong>Shopify's product CSV template</strong> from the Help Center</li>
+          <li>Map your columns and import</li>
+          <li>After import, go to <code>Inventory</code> and set quantities per location</li>
+        </ol>
+      </div>
+
+      <div class="callout">
+        <strong>Barcodes matter.</strong> If you have barcodes in your current system, make sure they're included in your CSV. Shopify POS uses them for scanning at checkout — saves your staff from searching by name.
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 5: Customers -->
+  <div class="section">
+    <h2>Import Customers</h2>
+
+    <div class="phase-card">
+      <span class="phase-number">Phase 5</span>
+      <h3>Bring Over Your Customer Data <span class="timeline-est">~30 min</span></h3>
+      <ol class="steps">
+        <li>Go to <code>Customers → Import</code></li>
+        <li>Upload your CSV — include name, email, phone, address, and any tags</li>
+        <li>Shopify will <strong>merge duplicates</strong> by email address automatically</li>
+      </ol>
+      <p style="margin-top: 16px;">This gives your staff access to customer profiles at the register — purchase history, contact info, and order lookup all in one place.</p>
+    </div>
+  </div>
+
+  <!-- Phase 6: Gift Cards -->
+  <div class="section">
+    <h2>Migrate Gift Cards</h2>
+
+    <div class="phase-card">
+      <span class="phase-number">Phase 6</span>
+      <h3>Transfer Outstanding Balances <span class="timeline-est">varies</span></h3>
+      <p>Skip this section if you don't have gift cards to migrate.</p>
+      <ol class="steps">
+        <li>Go to <code>Products → Gift cards → Add gift card</code></li>
+        <li>Enter the <strong>same code</strong> from your old gift cards — Shopify accepts custom codes</li>
+        <li>Set the balance to match what's outstanding</li>
+        <li><strong>Leave the "Customer" field blank</strong> — filling it triggers a notification email you don't want for legacy cards</li>
+        <li>Once all cards are in Shopify, <strong>disable the codes in your old system immediately</strong></li>
+      </ol>
+      <div class="callout callout-warn">
+        <strong>Important:</strong> Do not run both systems in parallel for gift cards — it will cause balance mismatches. Disable old codes at cutover. For bulk imports (50+ cards), use the Shopify Admin API or an app like Rise.AI.
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 7: Staff -->
+  <div class="section">
+    <h2>Set Up Your Staff</h2>
+
+    <div class="phase-card">
+      <span class="phase-number">Phase 7</span>
+      <h3>Add Team Members &amp; Set Permissions <span class="timeline-est">~1 hour</span></h3>
+      <ol class="steps">
+        <li>Go to <code>Settings → Users and permissions</code> (or <code>Point of Sale → Staff</code>)</li>
+        <li>Click <strong>"Add staff"</strong> — for POS-only staff, add them as POS staff (these don't count against your admin staff seats)</li>
+        <li>Go to <code>Point of Sale → Roles</code> and create roles for your team:
+          <table class="hw-table" style="margin: 12px 0;">
+            <tr><th>Role</th><th>Typical Permissions</th></tr>
+            <tr><td><strong>Cashier</strong></td><td>Process sales, scan items, accept payments</td></tr>
+            <tr><td><strong>Shift Lead</strong></td><td>+ Apply discounts, process returns</td></tr>
+            <tr><td><strong>Manager</strong></td><td>+ Void transactions, view reports, edit orders</td></tr>
+          </table>
+        </li>
+        <li>Assign each staff member to their <strong>location(s)</strong></li>
+        <li>Staff will create their own <strong>PIN</strong> on first login to the POS app</li>
+      </ol>
+      <div class="callout">
+        <strong>Tip:</strong> Restrict discount and refund permissions to managers or shift leads if you want tighter controls on the floor.
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 8: Hardware -->
+  <div class="section">
+    <h2>Set Up Your Hardware</h2>
+
+    <div class="phase-card">
+      <span class="phase-number">Phase 8</span>
+      <h3>Get Your Register Ready <span class="timeline-est">1-2 days</span></h3>
+
+      <p><strong>POS App:</strong></p>
+      <ol class="steps">
+        <li>Download <strong>"Shopify POS"</strong> from the App Store (iPad/iPhone) or Google Play (Android)</li>
+        <li>Sign in with your Shopify credentials</li>
+        <li>Select your location when prompted</li>
+      </ol>
+
+      <div style="margin-top: 24px;">
+        <p><strong>Card Reader:</strong></p>
+        <ol class="steps">
+          <li>Order your card reader from <strong>hardware.shopify.com</strong> (use any discount code provided)</li>
+          <li>Once it arrives, open the POS app → <code>Settings → Card Reader → Connect</code></li>
+          <li>Follow the Bluetooth pairing instructions</li>
+        </ol>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <p><strong>Optional peripherals:</strong></p>
+        <table class="hw-table">
+          <tr><th>Device</th><th>Connection</th><th>Setup</th></tr>
+          <tr><td><strong>Receipt Printer</strong><br><span style="color:#888;font-size:12px;">Star Micronics, Epson</span></td><td>USB, Bluetooth, or Ethernet</td><td>POS app → Settings → Hardware → Printers</td></tr>
+          <tr><td><strong>Barcode Scanner</strong></td><td>Bluetooth or USB</td><td>Bluetooth: pair in device settings. USB: plug in, works automatically.</td></tr>
+          <tr><td><strong>Cash Drawer</strong></td><td>RJ11 cable to receipt printer</td><td>Auto-opens at checkout when connected to printer</td></tr>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>No scanner?</strong> The POS app's built-in camera works as a barcode scanner in a pinch. Full hardware compatibility list: <strong>hardware.shopify.com/pages/pos-compatibility</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 9: Testing -->
+  <div class="section">
+    <h2>Test Before You Go Live</h2>
+
+    <div class="phase-card">
+      <span class="phase-number">Phase 9</span>
+      <h3>Run Through Every Workflow <span class="timeline-est">~2 hours</span></h3>
+      <p>Before your first real customer transaction, run through each of these:</p>
+      <ul class="checklist">
+        <li><strong>Cash sale</strong> — process a sale, verify receipt prints correctly</li>
+        <li><strong>Card sale</strong> — verify card reader connects and payment goes through</li>
+        <li><strong>Return / refund</strong> — process a return, verify refund hits the correct payment method</li>
+        <li><strong>Discount</strong> — apply a discount, verify it calculates correctly</li>
+        <li><strong>Barcode scan</strong> — scan an item, verify it pulls up the right product</li>
+        <li><strong>Customer lookup</strong> — search for a customer, verify their profile loads</li>
+        <li><strong>Gift card</strong> — redeem a gift card, verify balance deducts correctly</li>
+        <li><strong>Register shift</strong> — open and close a shift, verify cash tracking works</li>
+        <li><strong>Staff permissions</strong> — test PIN login and role restrictions for each role</li>
+      </ul>
+      <div class="callout">
+        <strong>First real card transaction:</strong> Use a small dollar amount to confirm deposits hit your bank account. Deposits typically arrive in 2 business days.
+      </div>
+    </div>
+  </div>
+
+  <!-- Phase 10: Go Live -->
+  <div class="section">
+    <h2>Go-Live Day</h2>
+
+    <div class="phase-card">
+      <span class="phase-number">Phase 10</span>
+      <h3>Make the Switch <span class="timeline-est">~half day</span></h3>
+      <p>Pick a slower day of the week for cutover so your team has room to get comfortable without peak-hour pressure.</p>
+      <ol class="steps">
+        <li>Do a <strong>final inventory count</strong> at your retail location</li>
+        <li>Update Shopify inventory to match the physical count</li>
+        <li><strong>Disable card processing on your old POS</strong> so there's no confusion about which register is live</li>
+        <li>Process your first real transactions on Shopify POS</li>
+        <li>Keep your old POS system <strong>accessible but not active</strong> for 2-4 weeks in case you need to reference historical data</li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Phase 11: After Launch -->
+  <div class="section">
+    <h2>After Launch</h2>
+
+    <div class="phase-card">
+      <span class="phase-number">Phase 11</span>
+      <h3>First Week Checks</h3>
+      <ul class="checklist">
+        <li>Check your first Shopify invoice — <code>Settings → Billing</code> — confirm charges look right</li>
+        <li>Verify your first deposit hits your bank account</li>
+        <li>Review the <strong>Sales by Staff</strong> report to make sure transactions are attributing correctly</li>
+        <li>Check inventory levels after a few days of selling — confirm sync is working</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Resources -->
+  <div class="section">
+    <h2>Resources</h2>
+    <p class="section-intro">Training for your team and support if you need it.</p>
+
+    <a class="resource-link" href="https://academy.shopify.com" target="_blank">
+      <span class="icon">🎓</span>
+      <span class="label">Shopify POS Academy — free POS training courses for your staff</span>
+      <span class="arrow">→</span>
+    </a>
+    <a class="resource-link" href="https://help.shopify.com/en/manual/sell-in-person" target="_blank">
+      <span class="icon">📖</span>
+      <span class="label">Help Center — POS setup guides, troubleshooting, and how-tos</span>
+      <span class="arrow">→</span>
+    </a>
+    <a class="resource-link" href="https://hardware.shopify.com" target="_blank">
+      <span class="icon">🔌</span>
+      <span class="label">Hardware Store — card readers, printers, scanners, accessories</span>
+      <span class="arrow">→</span>
+    </a>
+    <a class="resource-link" href="https://hardware.shopify.com/pages/pos-compatibility" target="_blank">
+      <span class="icon">✅</span>
+      <span class="label">Hardware Compatibility — check if your existing devices work with Shopify POS</span>
+      <span class="arrow">→</span>
+    </a>
+
+    <div class="callout" style="margin-top: 20px;">
+      <strong>Need help?</strong> Shopify Support is available 24/7 via chat in your admin — click the <strong>?</strong> icon in the bottom-right corner.
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Prepared by Kyle Dugandzic · Shopify · <span id="date"></span>
+  </div>
+
+</div>
+
+<script>
+  document.getElementById('date').textContent = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+</script>
+</body>
+</html>
