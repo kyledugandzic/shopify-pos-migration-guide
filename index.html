@@ -347,11 +347,22 @@
       <ol class="steps">
         <li>Go to <code>Settings → Payments</code></li>
         <li>Click <strong>"Activate Shopify Payments"</strong> (if not already active)</li>
-        <li>Complete business verification — business info, bank account for deposits, tax ID</li>
+        <li>Complete business verification. Have these ready:
+          <table class="hw-table" style="margin: 12px 0;">
+            <tr><th>What You Need</th><th>Details</th></tr>
+            <tr><td><strong>Business info</strong></td><td>Legal name, address, business type (sole proprietor, LLC, etc.)</td></tr>
+            <tr><td><strong>Tax ID</strong></td><td>EIN (US) or Business Number (CA)</td></tr>
+            <tr><td><strong>Bank account</strong></td><td>Routing number + account number for deposits</td></tr>
+            <tr><td><strong>Personal ID</strong></td><td>SSN or SIN — required for identity verification</td></tr>
+          </table>
+        </li>
         <li>Once approved, your POS card reader will process payments through Shopify Payments automatically</li>
       </ol>
       <div class="callout">
         <strong>Good to know:</strong> Card-present transactions are decoupled from Shopify's platform — your register keeps processing cards even during a backend hiccup. Deposits typically hit your bank account in 2 business days.
+      </div>
+      <div class="callout" style="margin-top: 12px;">
+        <strong>Accepted payment methods at POS:</strong> Credit/debit cards, contactless (Apple Pay, Google Pay), cash, gift cards, and split payments (any combination on a single transaction).
       </div>
     </div>
   </div>
@@ -375,15 +386,19 @@
       <div style="margin-top: 24px;">
         <p><strong>If your products are NOT in Shopify yet:</strong></p>
         <ol class="steps">
-          <li>Go to <code>Products → Import</code></li>
-          <li>Upload your CSV — use <strong><a href="https://help.shopify.com/en/manual/products/import-export/using-csv#get-a-sample-csv-file" target="_blank" style="color:#004c3f;">Shopify's product CSV template</a></strong> from the Help Center</li>
-          <li>Map your columns and import</li>
+          <li>Download <strong><a href="https://help.shopify.com/en/manual/products/import-export/using-csv#get-a-sample-csv-file" target="_blank" style="color:#004c3f;">Shopify's product CSV template</a></strong> and use it as your starting point</li>
+          <li>Fill in your products. The only required column is <strong>Title</strong>. Key optional columns: SKU, Barcode, Price, Vendor, Tags, and Product Category.</li>
+          <li><strong>For products with variants</strong> (size, color, etc.): the first row has the product title + first variant. Additional variants go on separate rows with the <strong>same Handle</strong> value — leave Title, Description, and Vendor blank on variant rows. Use Option1 Name/Value, Option2, Option3 for up to 3 option types.</li>
+          <li>Save as <strong>UTF-8 CSV</strong>. Go to <code>Products → Import</code> and upload.</li>
           <li>After import, go to <code>Inventory</code> and set quantities per location</li>
         </ol>
       </div>
 
       <div class="callout">
-        <strong>Barcodes matter.</strong> If you have barcodes in your current system, make sure they're included in your CSV. Shopify POS uses them for scanning at checkout — saves your staff from searching by name.
+        <strong>Barcodes matter.</strong> Include them in the <strong>Barcode</strong> column of your CSV (UPC, EAN, or ISBN). Shopify POS uses barcodes for scanning at checkout — saves your staff from searching by name.
+      </div>
+      <div class="callout callout-warn" style="margin-top: 12px;">
+        <strong>Multi-location inventory:</strong> The product CSV doesn't handle per-location quantities. After importing products, use the separate <strong>inventory CSV</strong> (<code>Products → Inventory → Import</code>) to set stock levels at each retail location.
       </div>
     </div>
   </div>
@@ -453,6 +468,9 @@
       <div class="callout">
         <strong>Tip:</strong> Restrict discount and refund permissions to managers or shift leads if you want tighter controls on the floor.
       </div>
+      <div class="callout callout-warn" style="margin-top: 12px;">
+        <strong>No bulk import:</strong> Staff must be added one at a time — there's no CSV upload for staff. If you have 10+ team members, set aside dedicated time for this. Each person takes about 2-3 minutes.
+      </div>
     </div>
   </div>
 
@@ -474,10 +492,22 @@
       <div style="margin-top: 24px;">
         <p><strong>Card Reader:</strong></p>
         <ol class="steps">
-          <li>Order your card reader from <strong>hardware.shopify.com</strong> (use any discount code provided)</li>
+          <li>Order your card reader from <strong><a href="https://hardware.shopify.com" target="_blank" style="color:#004c3f;">hardware.shopify.com</a></strong> (use any discount code provided)</li>
           <li>Once it arrives, open the POS app → <code>Settings → Card Reader → Connect</code></li>
           <li>Follow the Bluetooth pairing instructions</li>
         </ol>
+      </div>
+
+      <div style="margin-top: 24px;">
+        <p><strong>Tap to Pay on iPhone (no hardware needed):</strong></p>
+        <ol class="steps">
+          <li>Open the POS app on an <strong>iPhone XS or newer</strong> running iOS 16.7+</li>
+          <li>Go to <code>Settings → Card Reader</code> and enable <strong>Tap to Pay on iPhone</strong></li>
+          <li>Follow the setup prompts — your iPhone becomes a contactless payment terminal</li>
+        </ol>
+        <div class="callout">
+          <strong>$0 hardware cost.</strong> Tap to Pay accepts all contactless payments (Apple Pay, Google Pay, tap-enabled cards) using just your iPhone. Great for roaming associates or if you're waiting for a card reader to arrive.
+        </div>
       </div>
 
       <div style="margin-top: 24px;">
@@ -491,7 +521,7 @@
       </div>
 
       <div class="callout">
-        <strong>No scanner?</strong> The POS app's built-in camera works as a barcode scanner in a pinch. Full hardware compatibility list: <strong>hardware.shopify.com/pages/pos-compatibility</strong>
+        <strong>No scanner?</strong> The POS app's built-in camera works as a barcode scanner in a pinch. Full hardware compatibility list: <strong><a href="https://hardware.shopify.com/pages/pos-compatibility" target="_blank" style="color:#004c3f;">hardware.shopify.com/pages/pos-compatibility</a></strong>
       </div>
     </div>
   </div>
@@ -507,10 +537,13 @@
       <ul class="checklist">
         <li><strong>Cash sale</strong> — process a sale, verify receipt prints correctly</li>
         <li><strong>Card sale</strong> — verify card reader connects and payment goes through</li>
+        <li><strong>Split payment</strong> — pay part cash, part card on a single transaction</li>
         <li><strong>Return / refund</strong> — process a return, verify refund hits the correct payment method</li>
+        <li><strong>Exchange</strong> — return an item, then ring up a new item using the store credit (two back-to-back transactions)</li>
         <li><strong>Discount</strong> — apply a discount, verify it calculates correctly</li>
         <li><strong>Barcode scan</strong> — scan an item, verify it pulls up the right product</li>
         <li><strong>Customer lookup</strong> — search for a customer, verify their profile loads</li>
+        <li><strong>Online order lookup</strong> — search for an online order in POS to confirm you can view and manage cross-channel orders</li>
         <li><strong>Gift card</strong> — redeem a gift card, verify balance deducts correctly</li>
         <li><strong>Register shift</strong> — open and close a shift, verify cash tracking works</li>
         <li><strong>Staff permissions</strong> — test PIN login and role restrictions for each role</li>
@@ -529,13 +562,27 @@
       <span class="phase-number">Phase 10</span>
       <h3>Make the Switch <span class="timeline-est">~half day</span></h3>
       <p>Pick a slower day of the week for cutover so your team has room to get comfortable without peak-hour pressure.</p>
+
+      <p style="margin-top: 16px;"><strong>The week before:</strong></p>
+      <ul class="checklist">
+        <li><strong>Train your staff</strong> — walk everyone through the POS app: processing a sale, applying a discount, doing a return, looking up a customer. Hands-on practice beats a walkthrough every time.</li>
+        <li>Make sure every staff member has <strong>logged in and set their PIN</strong></li>
+        <li>Confirm all hardware is <strong>connected and tested</strong> (card reader, printer, scanner)</li>
+      </ul>
+
+      <p style="margin-top: 20px;"><strong>Morning of cutover:</strong></p>
       <ol class="steps">
-        <li>Do a <strong>final inventory count</strong> at your retail location</li>
-        <li>Update Shopify inventory to match the physical count</li>
+        <li><strong>Charge all devices</strong> — iPad/iPhone, card reader</li>
+        <li>Confirm <strong>Wi-Fi is stable</strong> at the register area</li>
+        <li>Do a <strong>final inventory count</strong> and update Shopify to match</li>
+        <li>Set your opening <strong>cash float</strong> and open a register shift in the POS app</li>
         <li><strong>Disable card processing on your old POS</strong> so there's no confusion about which register is live</li>
         <li>Process your first real transactions on Shopify POS</li>
-        <li>Keep your old POS system <strong>accessible but not active</strong> for 2-4 weeks in case you need to reference historical data</li>
       </ol>
+
+      <div class="callout" style="margin-top: 16px;">
+        <strong>Keep your old POS accessible but not active</strong> for 2-4 weeks in case you need to reference historical transactions, look up old receipts, or check past reporting. Don't delete anything yet.
+      </div>
     </div>
   </div>
 
@@ -548,10 +595,23 @@
       <h3>First Week Checks</h3>
       <ul class="checklist">
         <li>Check your first Shopify invoice — <code>Settings → Billing</code> — confirm charges look right</li>
-        <li>Verify your first deposit hits your bank account</li>
+        <li>Verify your first deposit hits your bank account (typically 2 business days)</li>
         <li>Review the <strong>Sales by Staff</strong> report to make sure transactions are attributing correctly</li>
-        <li>Check inventory levels after a few days of selling — confirm sync is working</li>
+        <li>Check inventory levels after a few days of selling — confirm online and in-store counts are staying in sync</li>
+        <li>Ask your team what's <strong>confusing or slow</strong> — the first week is when habits form, so fix friction early</li>
       </ul>
+
+      <div style="margin-top: 24px;">
+        <p><strong>30-Day Check-In:</strong></p>
+        <ul class="checklist">
+          <li>Review <strong>Sales by Location</strong> report — <code>Analytics → Reports</code> — confirm revenue is tracking as expected</li>
+          <li><strong>Reconcile deposits</strong> — compare Shopify payouts (<code>Settings → Payments → View payouts</code>) against your bank statements</li>
+          <li>Check <strong>inventory accuracy</strong> — do a spot count of your top sellers and compare to Shopify quantities</li>
+          <li>Review <strong>discount usage</strong> — confirm discounts are being applied correctly and not abused</li>
+          <li>Confirm <strong>tax reporting</strong> looks correct — <code>Analytics → Reports → Finances</code></li>
+          <li>If everything looks good, <strong>fully decommission your old POS</strong></li>
+        </ul>
+      </div>
     </div>
   </div>
 
