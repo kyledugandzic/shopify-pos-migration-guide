@@ -397,10 +397,14 @@
       <h3>Bring Over Your Customer Data <span class="timeline-est">~30 min</span></h3>
       <ol class="steps">
         <li>Go to <code>Customers → Import</code></li>
-        <li>Upload your CSV — include name, email, phone, address, and any tags</li>
-        <li>Shopify will <strong>merge duplicates</strong> by email address automatically</li>
+        <li>Upload your CSV — use <strong><a href="https://help.shopify.com/en/manual/customers/import-export-customers" target="_blank" style="color:#004c3f;">Shopify's customer CSV template</a></strong> as your starting point. The <strong>Email</strong> column is required (even if some rows are blank). Other columns — First Name, Last Name, Phone, Address, Tags — are optional.</li>
+        <li>Make sure your file is <strong>UTF-8 encoded</strong> and under 15 MB. If it's larger, split into multiple files.</li>
+        <li>Shopify will <strong>merge duplicates</strong> by email address automatically — if a duplicate email or phone exists, only the last entry imports</li>
       </ol>
-      <p style="margin-top: 16px;">This gives your staff access to customer profiles at the register — purchase history, contact info, and order lookup all in one place.</p>
+      <div class="callout">
+        <strong>Heads up:</strong> Customer passwords and order history cannot be migrated via CSV. Order history will build naturally as customers shop on the new system.
+      </div>
+      <p style="margin-top: 16px;">This gives your staff access to customer profiles at the register — contact info, tags, and order lookup all in one place.</p>
     </div>
   </div>
 
